@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>The Builder's Atlas</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: { DEFAULT: '#1a1a2e', light: '#252542', lighter: '#2f2f52' },
+            cream: { DEFAULT: '#f5f0e8', dark: '#e8e0d0' },
+            amber: { DEFAULT: '#e8a838', light: '#f0c060', dark: '#c08820' },
+            electric: { DEFAULT: '#3b82f6', light: '#60a5fa', dark: '#2563eb' },
+            sage: { DEFAULT: '#6b9080', light: '#8ab0a0' },
+            danger: { DEFAULT: '#e85d5d', light: '#f08080' },
+          },
+          fontFamily: {
+            display: ['Playfair Display', 'serif'],
+            body: ['DM Sans', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-family: 'DM Sans', sans-serif; background: #1a1a2e; color: #f5f0e8; }
+    body { min-height: 100dvh; -webkit-overflow-scrolling: touch; }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #1a1a2e; }
+    ::-webkit-scrollbar-thumb { background: #2f2f52; border-radius: 3px; }
+
+    /* Safe area insets for notched phones */
+    .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+    /* Flip card animation */
+    .flip-card-inner {
+      transition: transform 0.5s;
+      transform-style: preserve-3d;
+    }
+    .flip-card-inner.flipped { transform: rotateY(180deg); }
+    .flip-card-front, .flip-card-back {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .flip-card-back { transform: rotateY(180deg); }
+
+    /* Slide transitions */
+    .slide-enter { opacity: 0; transform: translateX(30px); }
+    .slide-enter-active { opacity: 1; transform: translateX(0); transition: all 0.3s ease-out; }
+    .slide-exit { opacity: 1; transform: translateX(0); }
+    .slide-exit-active { opacity: 0; transform: translateX(-30px); transition: all 0.3s ease-out; }
+
+    /* Skeleton loading pulse */
+    @keyframes skeleton-pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+    }
+    .skeleton-pulse { animation: skeleton-pulse 1.5s ease-in-out infinite; }
+
+    /* Progress ring animation */
+    @keyframes progress-fill {
+      from { stroke-dashoffset: var(--circumference); }
+    }
+
+    /* Touch feedback */
+    .touch-press:active { transform: scale(0.97); }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Hover only on hover-capable devices */
+    @media (hover: hover) {
+      .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+      .hover-glow:hover { box-shadow: 0 0 20px rgba(232,168,56,0.2); }
+    }
+
+    /* Sheet modal slide-up */
+    .sheet-overlay { background: rgba(0,0,0,0.5); }
+    .sheet-content {
+      transition: transform 0.3s ease-out;
+      transform: translateY(100%);
+    }
+    .sheet-content.open { transform: translateY(0); }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>
