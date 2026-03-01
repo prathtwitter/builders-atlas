@@ -10676,7 +10676,110 @@ function App() {
 }
 
 // ============================================================================
+// PIN GATE
+// ============================================================================
+
+function PinGate({ children }) {
+  const [authenticated, setAuthenticated] = useState(
+    () => sessionStorage.getItem('ba_auth') === 'true'
+  );
+  const [pin, setPin] = useState('');
+  const [error, setError] = useState('');
+  const [checking, setChecking] = useState(false);
+  const [pinRequired, setPinRequired] = useState(null); // null = unknown
+
+  // Check if PIN is required on mount
+  useEffect(() => {
+    fetch('/api/verify-pin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin: '' }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.valid) {
+          // No PIN configured — skip gate
+          setPinRequired(false);
+          setAuthenticated(true);
+        } else {
+          setPinRequired(true);
+        }
+      })
+      .catch(() => setPinRequired(false)); // If API fails, allow access
+  }, []);
+
+  if (authenticated) return children;
+  if (pinRequired === null) return null; // Loading
+  if (pinRequired === false) return children;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!pin.trim()) return;
+    setChecking(true);
+    setError('');
+    try {
+      const res = await fetch('/api/verify-pin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin: pin.trim() }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        sessionStorage.setItem('ba_auth', 'true');
+        setAuthenticated(true);
+      } else {
+        setError('Wrong PIN');
+        setPin('');
+      }
+    } catch {
+      setError('Could not verify. Try again.');
+    } finally {
+      setChecking(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-charcoal flex items-center justify-center p-6">
+      <form onSubmit={handleSubmit} className="w-full max-w-xs text-center">
+        <div className="w-16 h-16 rounded-2xl bg-amber/10 flex items-center justify-center mx-auto mb-6">
+          <Lock size={28} className="text-amber" />
+        </div>
+        <h1 className="font-display text-2xl text-cream mb-2">Builder&apos;s Atlas</h1>
+        <p className="font-body text-cream/40 text-sm mb-8">Enter PIN to continue</p>
+        <input
+          type="password"
+          inputMode="numeric"
+          value={pin}
+          onChange={(e) => setPin(e.target.value)}
+          placeholder="Enter PIN"
+          autoFocus
+          className="w-full bg-charcoal-light border border-charcoal-lighter/40 rounded-xl px-4 py-3 text-center text-xl text-cream font-mono tracking-[0.3em] placeholder:text-cream/20 placeholder:tracking-normal placeholder:text-base focus:outline-none focus:ring-2 focus:ring-amber/50 mb-3"
+        />
+        {error && (
+          <p className="text-red-400 text-sm font-body mb-3">{error}</p>
+        )}
+        <button
+          type="submit"
+          disabled={!pin.trim() || checking}
+          className="w-full bg-amber text-charcoal font-display font-semibold py-3 rounded-xl hover:bg-amber-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          {checking ? 'Checking...' : 'Enter'}
+        </button>
+      </form>
+    </div>
+  );
+}
+
+// ============================================================================
 // EXPORT
 // ============================================================================
 
-export default App;
+function AppWithGate() {
+  return (
+    <PinGate>
+      <App />
+    </PinGate>
+  );
+}
+
+export default AppWithGate;
