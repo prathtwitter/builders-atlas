@@ -9058,8 +9058,6 @@ function LearnTab({ state, dispatch, isDesktop }) {
     }
   }, [prevLesson, dispatch]);
 
-  const swipeHandlers = useSwipe(goNext, goPrev);
-
   // Scroll to top on lesson change
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
@@ -9069,7 +9067,6 @@ function LearnTab({ state, dispatch, isDesktop }) {
     <div
       ref={scrollRef}
       className="flex-1 overflow-y-auto"
-      {...swipeHandlers}
     >
       <div className="px-4 py-5 max-w-3xl mx-auto">
         <LessonRenderer
