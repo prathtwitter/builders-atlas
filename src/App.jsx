@@ -9383,10 +9383,10 @@ function ChaptersTab({ state, dispatch }) {
 // ============================================================================
 
 /**
- * Call the Gemini AI proxy endpoint.
+ * Call the AI proxy endpoint.
  * @param {string} systemPrompt - System instructions for the model
  * @param {string} userMessage - The user's message content
- * @param {string} apiKey - Gemini API key
+ * @param {string} apiKey - Optional API key override
  * @returns {Promise<string>} The text content from the AI response
  */
 const callAI = async (systemPrompt, userMessage, apiKey) => {
@@ -9804,7 +9804,7 @@ function SolverInput({ state, dispatch, isDesktop }) {
         {showApiKey && (
           <Card className="mb-6 border-charcoal-lighter/30">
             <p className="font-body text-cream/40 text-xs leading-relaxed mb-3">
-              Optional — enter your own Gemini API key for local development. On the hosted version, this is handled automatically.
+              Optional — enter your own API key for local development. On the hosted version, this is handled automatically.
             </p>
             <div className="flex gap-2">
               <input
