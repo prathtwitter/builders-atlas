@@ -17,7 +17,7 @@ export default async function handler(req, res) {
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'deepseek/deepseek-chat-v3-0324',
+        model: 'stepfun/step-3.5-flash:free',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userMessage },
